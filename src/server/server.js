@@ -1,46 +1,38 @@
-const http = require('http');
 const { connectDB, getDB } = require('./db');
-const { log } = require('console');
+const express = require('express');
 
-const server = http.createServer(async (req, res) => {
-  if (req.method === 'POST' && req.url === '/users') {
-    let body = '';
+const app = express();
+const PORT = 3000;
 
-    req.on('data', (chunk) => {
-      body += chunk.toString();
-    });
+//Middleware для парсинга JSON
+app.use(express.json());
 
-    req.on('end', async () => {
-      try {
-        const user = JSON.parse(body);
-        const { name, surname, email } = user;
+app.post('/users', async (req, res) => {
+  try {
+    const { name, surname, email } = req.body;
 
-        if (!name || !surname || !email) {
-          res.writeHead(400, { 'Connection-Type': 'application/json' });
-          return res.end(JSON.stringify({ message: 'Все поля обязательны' }));
-        }
-        const db = getDB();
-        await db.collection('users').insertOne(user);
+    if (!name || !surname || !email) {
+      return res.status(400).json({ message: 'Все поля обязательны' });
+    }
 
-        res.writeHead(201, { 'Connection-Type': 'application/json' });
-        return res.end(JSON.stringify({ message: 'Пользователь создан' }));
-      } catch (error) {
-        console.error(error);
-        res.writeHead(500, { 'Connection-Type': 'application/json' });
-        return res.end(JSON.stringify({ message: 'Ошибка сервера' }));
-      }
-    });
-  } else {
-    res.writeHead(404, { 'Connection-Type': 'application/json' });
-    res.end(JSON.stringify({ message: 'Не найдено' }));
+    const db = getDB();
+    await db.collection('users').insertOne({ name, surname, email });
+    return res.status(201).json({ message: 'Пользователь создан' });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Ошибка сервера' });
   }
+});
+
+app.use((req, res) => {
+  res.status(404).json({ message: 'Не найдено' });
 });
 
 //запуск
 const startServer = async () => {
   await connectDB();
-  server.listen(3000, () => {
-    console.log('Сервер запущен на http://localhost:3000');
+  app.listen(PORT, () => {
+    console.log(`Сервер запущен на http://localhost:${PORT}`);
   });
 };
 startServer();
