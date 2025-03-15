@@ -6,8 +6,12 @@ const v1Router = require('./v1/routes');
 const app = express();
 const PORT = 3000;
 
+//Middleware для парсинга JSON
 app.use(express.json());
 app.use('/api/v1', v1Router);
+// app.get('/', (req, res) => {
+//   res.send("<h2>It's Working!</h2>");
+// });
 
 app.post('/users', async (req, res) => {
   try {
@@ -29,6 +33,19 @@ app.post('/users', async (req, res) => {
 
     await db.collection('users').insertOne(newUser);
     return res.status(201).json({ message: 'Пользователь создан', id: newUser.id });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Ошибка сервера' });
+  }
+});
+
+app.get('/users', async (req, res) => {
+  try {
+    const users = await db
+      .collection('users')
+      .find({}, { projection: { _id: 0 } })
+      .toArray();
+    return res.status(200).json(users);
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: 'Ошибка сервера' });
