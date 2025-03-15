@@ -1,11 +1,12 @@
 const { connectDB, getDB } = require('./db');
 const express = require('express');
+const v1Router = require('./v1/routes');
 
 const app = express();
 const PORT = 3000;
 
-//Middleware для парсинга JSON
 app.use(express.json());
+app.use('/api/v1', v1Router);
 
 app.post('/users', async (req, res) => {
   try {
