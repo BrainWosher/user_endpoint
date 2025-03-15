@@ -1,6 +1,6 @@
 const { connectDB, getDB } = require('./db');
 const express = require('express');
-const { uuid } = require('uuid');
+const { v4: uuidv4 } = require('uuid');
 const v1Router = require('./v1/routes');
 
 const app = express();
@@ -8,10 +8,6 @@ const PORT = 3000;
 
 //Middleware для парсинга JSON
 app.use(express.json());
-app.use('/api/v1', v1Router);
-// app.get('/', (req, res) => {
-//   res.send("<h2>It's Working!</h2>");
-// });
 
 app.post('/users', async (req, res) => {
   try {
@@ -22,7 +18,7 @@ app.post('/users', async (req, res) => {
     }
 
     const newUser = {
-      id: uuid(),
+      id: uuidv4(),
       name,
       surname,
       email,
@@ -41,6 +37,8 @@ app.post('/users', async (req, res) => {
 
 app.get('/users', async (req, res) => {
   try {
+    const db = getDB();
+
     const users = await db
       .collection('users')
       .find({}, { projection: { _id: 0 } })
