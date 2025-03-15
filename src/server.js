@@ -1,5 +1,6 @@
 const { connectDB, getDB } = require('./db');
 const express = require('express');
+const { uuid } = require('uuid');
 const v1Router = require('./v1/routes');
 
 const app = express();
@@ -16,9 +17,18 @@ app.post('/users', async (req, res) => {
       return res.status(400).json({ message: 'Все поля обязательны' });
     }
 
+    const newUser = {
+      id: uuid(),
+      name,
+      surname,
+      email,
+      createdDate: new Date(),
+    };
+
     const db = getDB();
-    await db.collection('users').insertOne({ name, surname, email });
-    return res.status(201).json({ message: 'Пользователь создан' });
+
+    await db.collection('users').insertOne(newUser);
+    return res.status(201).json({ message: 'Пользователь создан', id: newUser.id });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: 'Ошибка сервера' });
