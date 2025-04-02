@@ -1,7 +1,7 @@
-const { connectDB, getDB } = require('./db');
+const { connectDB, getDB } = require('./database/db');
 const express = require('express');
 const { v4: uuidv4 } = require('uuid');
-const v1Router = require('./v1/routes');
+const v1UserRouter = require('./v1/routes/userRoutes');
 
 const app = express();
 const PORT = 3000;
