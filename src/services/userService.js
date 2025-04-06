@@ -32,8 +32,10 @@ const updateOneUser = () => {
   return;
 };
 
-const deleteOneUser = () => {
-  return;
+const deleteOneUser = async (userId) => {
+  const db = getDB();
+
+  return db.collection('users').deleteOne({ _id: userId });
 };
 
 module.exports = {

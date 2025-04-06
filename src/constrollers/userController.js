@@ -15,7 +15,7 @@ const getOneUser = async (req, res) => {
     const user = await userService.getOneUser(userId);
 
     if (!user) {
-      res.status(400).json({ message: 'Пользователь не найден' });
+      return res.status(400).json({ message: 'Пользователь не найден' });
     }
 
     res.status(200).json(user);
@@ -46,9 +46,20 @@ const updateOneUser = (req, res) => {
   res.send('Update an existing User');
 };
 
-const deleteOneUser = (req, res) => {
-  userService.deleteOneUser();
-  res.send('Delete an existing User');
+const deleteOneUser = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const user = await userService.deleteOneUser(userId);
+
+    if (!user) {
+      return res.status(400).json({ message: 'Пользователь не найден' });
+    }
+
+    res.status(200).json({ message: 'Пользователь удален' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Ошибка сервера' });
+  }
 };
 
 module.exports = {
