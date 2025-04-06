@@ -41,9 +41,22 @@ const createNewUser = async (req, res) => {
   }
 };
 
-const updateOneUser = (req, res) => {
-  const updateUser = userService.updateOneUser();
-  res.send('Update an existing User');
+const updateOneUser = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const updatingData = req.body;
+
+    if (!updatingData) {
+      res.status(400).json({ message: 'Данные для обновления обязательны' });
+    }
+
+    await userService.updateOneUser(ObjectId(userId), updatingData);
+
+    res.status(200).json({ message: 'Данные пользователя обновлены' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Ошибка сервера' });
+  }
 };
 
 const deleteOneUser = async (req, res) => {

@@ -28,7 +28,9 @@ const createNewUser = async () => {
   return newUser;
 };
 
-const updateOneUser = () => {
+const updateOneUser = async (userId, updatingData) => {
+  const db = getDB();
+  await db.collection('users').updateOne({ _id: userId }, { $set: updatingData });
   return;
 };
 
