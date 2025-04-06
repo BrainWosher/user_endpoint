@@ -9,8 +9,10 @@ const getAllUsers = async () => {
     .toArray();
 };
 
-const getOneUser = () => {
-  return;
+const getOneUser = async (userId) => {
+  const db = getDB();
+  const user = await db.collection('users').findOne({ _id: userId });
+  return user; //крашится при запросе
 };
 
 const createNewUser = async () => {
