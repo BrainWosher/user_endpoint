@@ -15,17 +15,9 @@ const getOneUser = async (userId) => {
   return user; //крашится при запросе
 };
 
-const createNewUser = async () => {
+const createNewUser = async (newUser) => {
   const db = getDB();
-  const newUser = {
-    id: uuidv4(),
-    name,
-    surname,
-    email,
-    createdDate: new Date(),
-  };
   await db.collection('users').insertOne(newUser);
-  return newUser;
 };
 
 const updateOneUser = async (userId, updatingData) => {

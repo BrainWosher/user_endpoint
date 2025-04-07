@@ -1,3 +1,4 @@
+const { v4: uuidv4 } = require('uuid');
 const userService = require('../services/userService');
 
 const getAllUsers = async (req, res) => {
@@ -32,7 +33,16 @@ const createNewUser = async (req, res) => {
     if (!name || !surname || !email) {
       res.status(400).json({ message: 'Все поля обязательны' });
     }
-    const newUser = await userService.createNewUser(newUser);
+
+    const newUser = {
+      id: uuidv4(),
+      name,
+      surname,
+      email,
+      createdDate: new Date(),
+    };
+
+    await userService.createNewUser(newUser);
 
     res.status(201).json(newUser);
   } catch (error) {
