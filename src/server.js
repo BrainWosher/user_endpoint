@@ -1,13 +1,13 @@
 const { connectDB, getDB } = require('./database/db');
 const express = require('express');
-const v1UserRouter = require('./v1/routes/userRoutes');
+const v1TaskRouter = require('./v1/routes/taskRoutes');
 
 const app = express();
 const PORT = 3000;
 
 //Middleware для парсинга JSON
 app.use(express.json());
-app.use('/api/v1/users', v1UserRouter);
+app.use('/api/v1/tasks', v1TaskRouter);
 
 app.use((req, res) => {
   res.status(404).json({ message: 'Не найдено' });
